@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Precio del Filete</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos Marinos Sofisticados */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e3f2fd; /* Azul Cielo Suave */
+            min-height: 100vh;
+            /* Fondo de burbujas sutil (usando un SVG data URL) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 100 100'%3E%3Cg opacity='.15'%3E%3Ccircle fill='%2364b5f6' cx='25' cy='25' r='5'%3E%3C/circle%3E%3Ccircle fill='%2364b5f6' cx='75' cy='75' r='3'%3E%3C/circle%3E%3Ccircle fill='%2364b5f6' cx='50' cy='50' r='4'%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: fixed;
+        }
+        .container-app {
+            background-color: rgba(255, 255, 255, 0.95); /* Ligeramente translúcido */
+            backdrop-filter: blur(2px); /* Efecto cristal */
+            width: 95%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0, 50, 100, 0.25); /* Sombra más profunda */
+            border: 1px solid #bbdefb;
+        }
+        /* Ocultar flechas de input number */
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        /* Animación de burbujas sutil en los contenedores clave */
+        .bubble-effect:hover {
+            box-shadow: 0 0 15px rgba(30, 136, 229, 0.5); /* Azul más intenso al pasar el mouse */
+            transform: translateY(-2px);
+            transition: all 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start p-4 pt-10">
+
+    <div id="app" class="container-app rounded-2xl p-6 md:p-8">
+        
+        <!-- Encabezado -->
+        <header class="mb-8 border-b pb-4 border-blue-400">
+            <h1 class="text-3xl font-extrabold text-blue-900 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-7 h-7 mr-2 text-blue-600">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                Calculadora Precio del Filete
+            </h1>
+            <!-- MENSAJE ELIMINADO: "Costo Neto por Kg de Filete vs. Precio de Compra." -->
+        </header>
+
+        <!-- VISTA DE CALCULADORA -->
+        <div id="calculatorView">
+            <!-- Selector de Pescado -->
+            <div class="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-300 bubble-effect">
+                <label for="selectFish" class="block text-sm font-bold text-blue-800 mb-2">
+                    1. Selecciona el Tipo de Pez:
+                </label>
+                <select id="selectFish" 
+                        class="w-full p-3 border border-blue-400 rounded-lg bg-white text-blue-900 focus:ring-blue-500 focus:border-blue-500 appearance-none transition duration-150 cursor-pointer">
+                    <!-- Opciones se llenarán con JavaScript -->
+                </select>
+                
+                <div class="mt-4 flex justify-between items-center">
+                    <span class="text-sm text-blue-800 font-medium">Merma Aplicada:</span>
+                    <span id="currentLoss" class="text-lg font-bold text-red-600">--%</span>
+                </div>
+            </div>
+
+            <!-- Campo Precio por Kg (Entero) -->
+            <div class="input-group mb-8">
+                <label for="inputPrice" class="block text-sm font-semibold text-gray-700 mb-1">
+                    2. Precio de Compra (Kg Entero):
+                </label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3.5 text-gray-500 font-bold">$</span>
+                    <input type="number" id="inputPrice" value="0" min="0" step="1" 
+                           class="w-full p-3 border border-blue-300 rounded-lg pl-8 text-xl focus:ring-blue-500 focus:border-blue-500 transition duration-150 bubble-effect"
+                           placeholder="Ej: 5">
+                </div>
+            </div>
+            
+            <!-- Resultado Final -->
+            <div class="bg-white p-6 rounded-xl border-l-4 border-blue-600 shadow-xl mb-8 bubble-effect">
+                <!-- ETIQUETA CAMBIADA -->
+                <span class="font-bold text-blue-800 text-xl block mb-2">Precio del Filete:</span>
+                <span id="filletPrice" class="text-4xl font-extrabold text-blue-700">$0.00</span>
+            </div>
+
+            <!-- Botón para Reconfigurar -->
+            <button onclick="showSettings()"
+                    class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl 
+                           hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-70 
+                           transition duration-200 shadow-md transform hover:scale-[1.01] active:scale-[0.99]">
+                ⚙️ Reconfigurar Porcentajes de Merma
+            </button>
+        </div>
+
+        <!-- VISTA DE CONFIGURACIÓN -->
+        <div id="settingsView" class="hidden">
+            <h2 class="text-xl font-bold text-blue-800 mb-4 border-b pb-2 border-blue-200">Ajustar Mermas (%)</h2>
+            <p class="text-sm text-gray-600 mb-6">
+                Ingresa el porcentaje de **pérdida (merma)** que aplicas en tu proceso.
+            </p>
+
+            <!-- Lista de Mermas (Se llenará con JS) -->
+            <div id="mermaInputs" class="space-y-4 mb-8">
+                <!-- Inputs dinámicos aquí -->
+            </div>
+
+            <!-- Botones de Acción -->
+            <button onclick="saveSettings()"
+                    class="w-full py-3 bg-green-600 text-white font-bold text-lg rounded-xl 
+                           hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 
+                           transition duration-200 shadow-lg transform hover:scale-[1.01] active:scale-[0.99] mb-4">
+                Guardar y Volver a Calcular
+            </button>
+            <button onclick="resetDefaults()"
+                    class="w-full py-3 bg-red-100 text-red-700 font-semibold rounded-xl 
+                           hover:bg-red-200 transition duration-200 border border-red-300">
+                Restablecer a Valores Iniciales
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Firebase Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // --- VARIABLES GLOBALES DE FIREBASE ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        let db;
+        let auth;
+        let currentUserId = null;
+        let initialFishData = [
+            { id: 'salmon', name: 'Salmón', loss: 35 },
+            { id: 'reineta', name: 'Reineta', loss: 55 },
+            { id: 'corvina', name: 'Corvina', loss: 38 },
+            { id: 'merluza_austral', name: 'Merluza Austral', loss: 35 },
+            { id: 'congrio', name: 'Congrio', loss: 40 },
+        ];
+        // fishTypes será el array que usaremos, cargado con valores de Firestore o por defecto
+        window.fishTypes = [...initialFishData]; 
+
+        // --- INICIALIZACIÓN Y AUTENTICACIÓN ---
+        async function initializeFirebase() {
+            if (!firebaseConfig || Object.keys(firebaseConfig).length === 0) {
+                console.error("Firebase no está configurado. Usando datos locales.");
+                // Si Firebase falla, solo usamos los datos iniciales y la persistencia no funciona.
+                setupUI();
+                return;
+            }
+
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Error en la autenticación:", error);
+                // Fallback a UI local si la autenticación falla
+                setupUI();
+                return;
+            }
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUserId = user.uid;
+                    // Ya autenticado, procedemos a cargar los datos.
+                    loadSettingsFromFirestore();
+                } else {
+                    console.warn("Usuario no autenticado. Usando datos por defecto.");
+                    setupUI();
+                }
+            });
+        }
+
+        // --- FIREBASE: CARGAR Y GUARDAR CONFIGURACIÓN ---
+
+        function getSettingsDocRef() {
+            if (!currentUserId) return null;
+            // Almacenamiento privado: /artifacts/{appId}/users/{userId}/fish_settings/config
+            return doc(db, `artifacts/${appId}/users/${currentUserId}/fish_settings`, 'config');
+        }
+
+        async function loadSettingsFromFirestore() {
+            const docRef = getSettingsDocRef();
+            if (!docRef) return;
+            
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const savedSettings = docSnap.data().mermaData;
+                    
+                    // Sobreescribir solo las mermas que existen y tienen un formato correcto
+                    window.fishTypes = initialFishData.map(initial => {
+                        const saved = savedSettings.find(s => s.id === initial.id);
+                        if (saved && typeof saved.loss === 'number' && saved.loss >= 0 && saved.loss <= 100) {
+                            return { ...initial, loss: saved.loss };
+                        }
+                        return initial;
+                    });
+                    console.log("Configuración cargada de Firestore:", window.fishTypes);
+                }
+            } catch (e) {
+                console.error("Error al cargar configuración de Firestore:", e);
+            }
+            // Importante: Inicializar la UI después de intentar cargar los datos
+            setupUI();
+        }
+
+        // CORRECCIÓN: Asignar a window para que sea accesible desde el onclick del HTML
+        window.saveSettings = async function() {
+            const docRef = getSettingsDocRef();
+            if (!docRef) {
+                // Cambiado alert() por console.error o modal (usando console.error por simplicidad en este entorno)
+                console.error("Error: No se puede guardar sin un ID de usuario.");
+                return;
+            }
+            
+            // Recoger los valores actuales de los inputs de configuración
+            const mermaInputs = document.getElementById('mermaInputs').children;
+            const updatedFishData = [];
+            
+            for (let i = 0; i < mermaInputs.length; i++) {
+                const inputElement = mermaInputs[i].querySelector('input');
+                const fishId = inputElement.dataset.id;
+                let newLoss = parseFloat(inputElement.value);
+
+                // Sanidad y límite
+                if (isNaN(newLoss) || newLoss < 0) newLoss = 0;
+                if (newLoss > 99) newLoss = 99; // Máximo rendimiento usable
+                
+                // Actualizar el array global fishTypes
+                const fish = window.fishTypes.find(f => f.id === fishId);
+                if (fish) {
+                    fish.loss = newLoss;
+                    updatedFishData.push(fish);
+                }
+            }
+            
+            try {
+                // Guardar solo el array de mermas en un objeto para el documento
+                await setDoc(docRef, { mermaData: updatedFishData });
+                console.log("Configuración guardada en Firestore.");
+                // Volver a la vista de calculadora y actualizar
+                window.showCalculator();
+            } catch (e) {
+                console.error("Error al guardar configuración:", e);
+                // Cambiado alert() por console.error o modal
+                console.error("Error al guardar la configuración. Intenta nuevamente.");
+            }
+        }
+
+
+        // --- LÓGICA DE LA APLICACIÓN Y UI ---
+
+        window.calculatePrice = function() {
+            const select = document.getElementById('selectFish');
+            if (!select || select.value === "") return;
+            
+            const selectedLoss = parseFloat(select.value);
+            // IMPORTANTE: Redondeo el precio a entero antes de usarlo en el cálculo, 
+            // aunque el input ya está configurado para solo aceptar enteros.
+            const inputPrice = Math.round(parseFloat(document.getElementById('inputPrice').value) || 0);
+
+            const yieldDecimal = 1 - (selectedLoss / 100); // Rendimiento Neto
+            
+            let filletPrice = 0;
+            if (yieldDecimal > 0) {
+                filletPrice = inputPrice / yieldDecimal;
+            }
+
+            // Actualizar UI
+            document.getElementById('currentLoss').textContent = `${selectedLoss.toFixed(1)}% (Merma)`;
+            document.getElementById('filletPrice').textContent = `$${filletPrice.toFixed(2)}`;
+        }
+        
+        function populateSelectors() {
+            const select = document.getElementById('selectFish');
+            select.innerHTML = ''; // Limpiar opciones anteriores
+            const mermaInputsContainer = document.getElementById('mermaInputs');
+            mermaInputsContainer.innerHTML = ''; // Limpiar inputs de configuración
+            
+            window.fishTypes.forEach(fish => {
+                // 1. Opciones del Selector
+                const option = document.createElement('option');
+                option.value = fish.loss;
+                option.textContent = `${fish.name} (Merma: ${fish.loss.toFixed(1)}%)`;
+                select.appendChild(option);
+
+                // 2. Inputs de Configuración
+                const row = document.createElement('div');
+                // Estilo más limpio y contrastado para los inputs de configuración
+                row.className = 'flex justify-between items-center p-3 bg-white rounded-lg border border-blue-200 shadow-sm bubble-effect';
+                row.innerHTML = `
+                    <span class="font-medium text-gray-700">${fish.name}</span>
+                    <div class="relative flex items-center">
+                        <input type="number" data-id="${fish.id}" value="${fish.loss.toFixed(1)}" min="0" max="99" step="0.1"
+                               class="w-20 py-2 pl-2 pr-8 border border-blue-300 rounded-lg text-right focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').slice(0, 5);"
+                        >
+                        <span class="absolute right-2 text-gray-500">%</span>
+                    </div>
+                `; 
+                mermaInputsContainer.appendChild(row);
+            });
+            
+            // Re-asignar listener y calcular precio inicial
+            select.onchange = window.calculatePrice;
+            window.calculatePrice();
+        }
+
+        window.showSettings = function() {
+            document.getElementById('calculatorView').classList.add('hidden');
+            document.getElementById('settingsView').classList.remove('hidden');
+            // Repoblar los inputs de settings por si hay cambios pendientes o para mostrar el valor actual
+            populateSelectors(); 
+        }
+
+        window.showCalculator = function() {
+            document.getElementById('settingsView').classList.add('hidden');
+            document.getElementById('calculatorView').classList.remove('hidden');
+            // Repoblar los selectores con los nuevos valores guardados y recalcular
+            populateSelectors();
+            window.calculatePrice();
+        }
+
+        window.resetDefaults = function() {
+            // Restaurar al array inicial de la definición
+            window.fishTypes = [...initialFishData];
+            
+            // Actualizar la vista de ajustes inmediatamente
+            populateSelectors(); 
+            
+            // Volver a guardar en Firestore para que la persistencia se actualice
+            window.saveSettings(); 
+        }
+
+        function setupUI() {
+            populateSelectors();
+            document.getElementById('inputPrice').addEventListener('input', window.calculatePrice);
+        }
+
+        // Iniciar la aplicación: Primero Firebase, luego UI.
+        document.addEventListener('DOMContentLoaded', initializeFirebase);
+    </script>
+</body>
+</html>
