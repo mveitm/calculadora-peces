@@ -5,7 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Precio Filete Chef IA</title>
     
-    <!-- Configuración PWA y Iconos (usando el ícono de pez) -->
+    <!-- META Open Graph para WhatsApp / RRSS -->
+    <meta property="og:title" content="Calculadora Precio Filete Chef IA">
+    <meta property="og:description" content="Calcula el precio real del filete de pescado según merma y precio del pescado entero. Ideal para cocinas y restaurantes.">
+    <meta property="og:type" content="website">
+    <!-- URL pública de tu app -->
+    <meta property="og:url" content="https://mveitm.github.io/calculadora-peces/">
+    <!-- URL pública de la imagen del pez (OJO: URL ABSOLUTA) -->
+    <meta property="og:image" content="https://mveitm.github.io/calculadora-peces/icono%20app%20calculadora%20peces.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="800">
+    <meta property="og:site_name" content="Calculadora de Peces">
+
+    <!-- Twitter (no es para WSP pero suma) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Calculadora Precio Filete Chef IA">
+    <meta name="twitter:description" content="Calcula el precio real del filete de pescado según merma y precio del pescado entero.">
+    <meta name="twitter:image" content="https://mveitm.github.io/calculadora-peces/icono%20app%20calculadora%20peces.jpg">
+
+    <!-- Configuración PWA y Iconos (interfaz, navegador, PWA) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="mobile-web-app-capable" content="yes">
@@ -13,31 +32,28 @@
     <!-- Manifest para PWA -->
     <link rel="manifest" href="./manifest.json">
     
-    <!-- Iconos principales (mismo pez para favicon y PWA) -->
+    <!-- Icono de la app (para navegador/PWA, no WSP) -->
     <link rel="icon" type="image/jpg" sizes="320x320" href="./icono app calculadora peces.jpg">
     <link rel="apple-touch-icon" href="./icono app calculadora peces.jpg">
-    <meta name="theme-color" content="#1f2937"> <!-- Color de la barra de navegación del navegador -->
+    <meta name="theme-color" content="#1f2937">
 
     <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos en Modo Oscuro (High Contrast) */
         body {
             font-family: 'Inter', sans-serif;
-            background: #0f172a; /* Fondo muy oscuro, casi negro */
+            background: #0f172a;
             min-height: 100vh;
-            /* Permite el scrolling vertical en la página */
             overflow-y: auto; 
             background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             background-attachment: fixed;
         }
         .container-app {
-            background-color: #1f2937; /* Gris oscuro para la tarjeta principal */
+            background-color: #1f2937;
             color: #f3f4f6;
             width: 95%;
             max-width: 480px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            /* Asegura que la tarjeta no ocupe toda la altura si hay contenido */
             max-height: 90vh;
             overflow-y: auto; 
         }
@@ -47,11 +63,10 @@
             margin: 0; 
         }
         .glass-panel {
-            background: #374151; /* Panel intermedio oscuro */
+            background: #374151;
             border: 1px solid #4b5563;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        /* Animación de carga para IA */
         @keyframes shimmer {
             0% { background-position: -1000px 0; }
             100% { background-position: 1000px 0; }
@@ -63,6 +78,7 @@
         }
     </style>
 </head>
+
 <body class="flex flex-col items-center justify-start p-4 pt-8">
 
     <div id="app" class="container-app rounded-3xl p-6 md:p-8">
