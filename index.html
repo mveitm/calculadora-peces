@@ -68,19 +68,24 @@
     <div id="app" class="container-app rounded-3xl p-6 md:p-8">
         
         <!-- Encabezado: ícono del pez + título en una línea -->
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-black text-white flex items-center justify-center gap-3 mb-1">
-                <img
-                    src="./icono app calculadora peces.png"
-                    alt="Icono Calculadora Filete"
-                    class="w-8 h-8 rounded-2xl object-cover inline-block align-middle"
-                >
-                <span>Calculadora</span>
-            </h1>
-            <p class="text-indigo-400 font-medium tracking-wide uppercase text-xs">
-                Precio del Filete
-            </p>
+       <header class="mb-8 text-center">
+          <h1 class="text-3xl font-black text-white flex items-center justify-center gap-3 mb-1">
+            <!-- Contenedor azul grande -->
+            <span class="w-20 h-20 bg-indigo-600 rounded-3xl shadow-xl flex items-center justify-center overflow-hidden">
+              <!-- Imagen del pez, ocupando TODO el espacio azul -->
+              <img
+                src="./icono app calculadora peces.jpg"
+                alt="Icono Calculadora Filete"
+                class="w-full h-full object-cover"
+              >
+            </span>
+            <span>Calculadora</span>
+          </h1>
+          <p class="text-indigo-400 font-medium tracking-wide uppercase text-xs">
+            Precio del Filete
+          </p>
         </header>
+
 
         <!-- VISTA DE CALCULADORA -->
         <div id="calculatorView" class="space-y-6">
